@@ -1,36 +1,37 @@
 import pygame
 from pygame import joystick
+from Button import Button
 
 
 class Joystick:
-    button_names = {}
-    button_states = {}
-    prev_button_states = {}
-    button_callbacks = {}
-
-    py_js = None
+    pygame_js = None
+    buttons = {}
 
     def __init__(self, id=0):
         if not joystick.get_init():
             joystick.init()
-        self.py_js = joystick.Joystick(id)
-        self.py_js.init()
+        self.pygame_js = joystick.Joystick(id)
+        self.pygame_js.init()
 
         # initialize all the buttons to False
-        for i in range(self.py_js.get_numbuttons()):
-            self.button_states[i] = False
+        for i in range(self.pygame_js.get_numbuttons()):
+            self.buttons[i] = Button(i, self.pygame_js.get_button)
 
-    def update_button(self, btn, val):
-        self.prev_button_states[btn] = self.button_states[btn]
-        self.button_states[btn] = val
+    def update_buttons(self):
+        for btn in self.buttons:
+            self.buttons[btn].update()
 
-    def set_button_click_callback(self, btn, callback):
-        self.button_callbacks[btn] = callback
+    def set_button_clicked_callback(self, btn, callback):
+        self.buttons[btn].set_clicked_callback(callback)
 
-    def check_clicks(self):
-        for btn in self.button_states:
-            if not self.prev_button_states[btn] and self.button_states[btn]:
-                self.button_callbacks[btn]()
+    def set_button_pressed_callback(self, btn, callback):
+        print('setting button {} callback {}'.format(btn, callback))
+        self.buttons[btn].set_pressed_callback(callback)
+
+    def set_button_released_callback(self, btn, callback):
+        self.buttons[btn].set_released_callback(callback)
 
     def get_axis(self, num):
-        return self.py_js.get_axis(num)
+        return self.pygame_js.get_axis(num)
+
+
