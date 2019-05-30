@@ -62,8 +62,9 @@ while True:
 
     # handle joystick
     current_pos = mouse.position()
-    mov_x = int(js.get_axis(0) * MOUSE_MOVE_MULTIPLIER)
-    mov_y = int(js.get_axis(1) * MOUSE_MOVE_MULTIPLIER)
+    from Tools import non_linear_map
+    mov_x = int(non_linear_map(js.get_axis(0)))# * MOUSE_MOVE_MULTIPLIER)
+    mov_y = int(non_linear_map(js.get_axis(1))) #* MOUSE_MOVE_MULTIPLIER)
     mouse.move(current_pos[0] + mov_x, current_pos[1] + mov_y)
 
     time.sleep(0.03)
